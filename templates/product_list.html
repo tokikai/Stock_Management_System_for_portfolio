@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <title>商品一覧</title>
+</head>
+<body>
+  <!-- 画面上部にアラート一覧を表示 -->
+  {% if alert_products %}
+  <div style="color: red; font-weight: bold;">
+  在庫が不足しています!
+  <ul>
+  {% for p in alert_products %}
+    <li>{{ p.name }}（在庫: {{ p.current_stock }} / 最小在庫数: {{ p.reorder_point }}）</li>
+  {% endfor %}
+  </ul>
+  </div>
+  {% endif %}
+
+  <div class="">
+    <a class="InOut" href="{{ url_for('stock_mng') }}">
+      <button>入庫・出庫する</button>
+    </a>
+  </div>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <h1>商品一覧</h1>
+  <table>
+    <tr>
+      <th>カテゴリ</th>
+      <th>商品名</th>
+      <th>価格</th>
+      <th>現在の在庫数</th>
+      <th>最小在庫数</th>
+      <th>メモ</th>
+      <th>操作</th>
+      <th>予測</th>
+    </tr>
+    {% for product, current_stock in products_with_stock %}
+    <tr>
+      <td>{{ product.category }}</td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.price }}</td>
+      <td>{{ current_stock }}</td>
+      <td>{{ product.reorder_point }}</td>
+      <td>{{ product.memo }}</td>
+      <td>
+        <form action="{{ url_for('delete_product', product_id=product.product_id) }}" method="post" style="display:inline;">
+          <button type="submit" onclick="return confirm('本当に削除しますか？');">削除</button>
+        </form>
+      </td>
+      <td>
+        <a href="{{ url_for('forecast', product_id=product.product_id) }}">
+          <button>この商品を予測</button>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <div class="">
+    <a href="{{ url_for('add_product') }}">
+      <button>新規商品登録</button>
+    </a>
+  </div>
+
+  <div class="">
+    <a href="{{ url_for('stock_history') }}">
+      <button>履歴を確認</button>
+    </a>
+  </div>
+
+  <div class="ChatGPT">
+    <h2>【ChatGPTの混雑予想】</h2>
+    <p class="ChatGPT_res">{{ response }}</p>
+  </div>
+
+
+</body>
+</html>

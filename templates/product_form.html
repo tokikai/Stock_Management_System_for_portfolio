@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <title>新規商品登録</title>
+</head>
+<body>
+  <a href="{{ url_for('product_list') }}">
+    <button>商品一覧に戻る</button>
+  </a>
+  <h1>新規商品登録</h1>
+  <form method="post">
+    <label>カテゴリ: <input type="text" name="category" required></label><br>
+    <label>商品名: <input type="text" name="name" required></label><br>
+    <label>価格: <input type="number" name="price" required></label><br>
+    <label>最小在庫数: <input type="number" name="reorder_point" required></label><br>
+    <label>備考: <textarea name="memo"></textarea></label><br>
+    <div class="center">
+      <button type="submit">登録</button>
+    </div>
+  </form>
+</body>
+</html>

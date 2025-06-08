@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>履歴</title>
+  </head>
+  <body>
+    <div>
+      <a href="{{ url_for('product_list') }}">
+        <button>商品一覧に戻る</button></a>
+    </div>
+    <h2>在庫変動履歴</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>日付</th>
+          <th>商品名</th>
+          <th>本数</th>
+          <th>入庫/出庫</th>
+          <th>変動在庫数</th>
+          <th>備考</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for stock_history, product_name, new_total in stock_with_products %}
+        <tr>
+          <td>{{ stock_history.date }}</td>
+          <td>{{ product_name }}</td>
+          <td>{{ stock_history.quantity | abs }}</td>
+          <td>
+            {% if stock_history.quantity >= 0 %}
+              入庫
+            {% else %}
+              出庫
+            {% endif %}
+          </td>
+          <td>{{ new_total }}</td>
+          <td>{{ stock_history.memo }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

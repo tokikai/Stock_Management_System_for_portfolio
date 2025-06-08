@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <title>入庫・出庫</title>
+</head>
+<body>
+  <div class="">
+    <a href="{{ url_for('product_list') }}">
+      <button>商品一覧に戻る</button>
+    </a>
+  </div>
+  <h1>入庫・出庫</h1>
+  <form method="post">
+    <label>商品名: 
+      <select name="product_id" required>
+        <option value="">選択してください</option>
+        {% for product in products %}
+          <option value="{{ product.product_id }}">{{ product.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <br><br>
+    <label>数量: 
+      <input type="number" name="quantity" required min="1"> 点
+    </label>
+    <br><br>
+    <label>入庫・出庫の選択:</label>
+    <label>
+      <input type="radio" name="movement_type" value="入庫" required> 入庫
+    </label>
+    <label>
+      <input type="radio" name="movement_type" value="出庫" required> 出庫
+    </label>
+    <br><br>
+    <label>販売収益額: 
+      <input type="number" name="revenue" step="0.01" required>
+    </label>
+    <br><br>
+    <label>日付: 
+      <input type="date" name="date" required>
+    </label>
+    <br><br>
+    <label>備考: 
+      <textarea name="memo" rows="4" cols="50"></textarea>
+    </label>
+    <br><br>
+    <div class="center">
+      <button type="submit">登録</button>
+    </div>
+  </form>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <title>在庫予測結果</title>
+</head>
+<body>
+  <a href="{{ url_for('product_list') }}">
+    <button>商品一覧に戻る</button>
+  </a>
+  <h1>在庫予測結果</h1>
+  <p>SARIMAによる在庫予測です</p>
+  <p>在庫発注のヒントにして下さい</p>
+  <table>
+    <tr>
+      <th>日付</th>
+      <th>予測在庫数</th>
+      <!-- <th>下限</th>
+      <th>上限</th> -->
+    </tr>
+    {% for index, row in forecast.iterrows() %}
+    <tr>
+      <td>{{ row['ds'] }}</td>
+      <td>{{ row['yhat']|round(0, 'floor')|int }} 本</td>
+      <!-- <td>{{ row['yhat_lower']|round(0, 'floor')|int }}本</td> -->
+      <!-- <td>{{ row['yhat_upper']|round(0, 'floor')|int }}本</td> -->
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
