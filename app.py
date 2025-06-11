@@ -21,7 +21,7 @@ load_dotenv()
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = 'your_secret_key'  # フラッシュメッセージ用
+app.secret_key = 'your_secret_key'
 
 chatgpt_cache = {"comment": None, "timestamp": 0}
 CACHE_SECONDS = 3600
@@ -119,7 +119,6 @@ def stock_history():
     new_total = prev_total + history.quantity
     stock_totals[pid] = new_total
     product_name = products.get(pid, "商品名不明")
-    # (履歴, 商品名, 変動後在庫数)のタプルで渡す
     stock_with_products.append((history, product_name, new_total))
 
   return render_template('stock_history.html', stock_with_products=stock_with_products)
@@ -129,15 +128,14 @@ def stock_mng():
   """
   在庫の入庫・出庫処理
   """
-  products = Product.query.all()  # 商品リストを取得
+  products = Product.query.all()
   
   if request.method == 'POST':
-    # フォームからデータ取得
-    product_id = request.form['product_id']  # 商品IDを取得
+    product_id = request.form['product_id']
     quantity = request.form['quantity']
     revenue = request.form['revenue']
     date = request.form['date']
-    movement_type = request.form['movement_type']  # 入庫または出庫の選択を取得
+    movement_type = request.form['movement_type']
     memo = request.form['memo']
 
      # バリデーションチェック
@@ -181,14 +179,13 @@ def stock_mng():
     
     return redirect(url_for('product_list'))
   
-  return render_template('stock_mng_form.html', products=products)  # 商品リストをテンプレートに渡す
+  return render_template('stock_mng_form.html', products=products)
 
 @app.route('/forecast/<uuid:product_id>', methods=['GET'])
 def forecast(product_id):
   """
   在庫状況をARIMA/SARIMAモデルで予測する
   """
-  # 在庫変動履歴を取得
   stock_history = StockHistory.query.filter_by(product_id=product_id).order_by(StockHistory.date).all()
   
   # データフレームの作成
@@ -209,7 +206,6 @@ def forecast(product_id):
   df = df.groupby('ds').sum() # 日付ごとにデータを集約
   df.index = pd.to_datetime(df.index)
 
-  # dsをインデックスに設定
   df = df.asfreq('D')  # 日付の欠損を補完（在庫履歴が毎日でない場合）
 
   # 欠損値は直前値で補完
@@ -217,7 +213,6 @@ def forecast(product_id):
   df['y'].fillna(0, inplace=True)
 
   # SARIMAモデルの定義と学習
-  # ※パラメータ(p,d,q)(P,D,Q,s)は簡易的に設定。必要に応じて調整してください。
   model = SARIMAX(df['y'], order=(1,1,1), seasonal_order=(0,1,1,7))
   model_fit = model.fit(disp=False)
 

@@ -18,7 +18,7 @@ def fetch_ai_prediction_materials():
     user=os.environ.get("POSTGRES_USER"),
     password=os.environ.get("POSTGRES_PASSWORD"),
     host=os.environ.get("POSTGRES_HOST"),
-    port=int(os.environ.get("POSTGRES_PORT", 5432))  # ポートはint型で渡すのが安全
+    port=int(os.environ.get("POSTGRES_PORT", 5432))
   )
   conn.set_client_encoding('UTF8')  # 念のためUTF-8を明示
   cur = conn.cursor()
@@ -46,7 +46,6 @@ def get_chatgpt_comment():
   戻り値: ChatGPTの推論結果（str）
   """
   materials = fetch_ai_prediction_materials()
-  # プロンプト用に素材を整形
   material_texts = []
   for m in materials:
     material_texts.append(
