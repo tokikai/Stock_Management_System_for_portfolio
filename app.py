@@ -8,6 +8,7 @@ Flaskによる商品一覧・登録・削除サンプルアプリ
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 from models import db, Product, StockHistory
+import sqlalchemy
 import os
 import pandas as pd
 from statsmodels.tsa.statespace.sarimax import SARIMAX  # SARIMAモデルをインポート
@@ -80,8 +81,12 @@ def add_product():
       memo=memo
     )
     db.session.add(new_product)
-    db.session.commit()
-    flash('商品を登録しました。')
+    try:
+      db.session.commit()
+      flash('商品を登録しました。')
+    except sqlalchemy.exc.DataError:
+      db.session.rollback()
+      flash('数値が多きすぎます。')
     return redirect(url_for('product_list'))
   return render_template('product_form.html')
 
