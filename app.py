@@ -80,13 +80,25 @@ def add_product():
       reorder_point=int(reorder_point),
       memo=memo
     )
+    if not category or not name:
+      flash('カテゴリと商品名は必須です。')
+      return redirect(url_for('add_product'))
+
+    if not price.isdigit() or int(price) <= 0:
+      flash('価格は正の整数でなければなりません。')
+      return redirect(url_for('add_product'))
+
+    if not reorder_point.isdigit() or int(reorder_point) < 0:
+      flash('発注点は0以上の整数でなければなりません。')
+      return redirect(url_for('add_product'))
+    
+    if int(price) > 999999.99:
+      flash('価格は999999.99円以下で入力してください。')
+      return redirect(url_for('add_product'))
+
     db.session.add(new_product)
-    try:
-      db.session.commit()
-      flash('商品を登録しました。')
-    except sqlalchemy.exc.DataError:
-      db.session.rollback()
-      flash('数値が多きすぎます。')
+    db.session.commit()
+    flash('商品を登録しました。')
     return redirect(url_for('product_list'))
   return render_template('product_form.html')
 
